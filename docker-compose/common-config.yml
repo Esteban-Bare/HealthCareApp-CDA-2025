@@ -1,0 +1,20 @@
+services:
+  network-service:
+    networks:
+      - healthcareapplication
+
+  base-config:
+    extends:
+      service: network-service
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  microservices-config:
+    extends:
+      service: base-config
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:3030
+      - EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE=http://eureka:8761/eureka/

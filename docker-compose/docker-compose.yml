@@ -1,0 +1,60 @@
+services:
+  # i need a mysql container
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # Create multiple databases during container initialization
+      MYSQL_DATABASE: patient_db
+      MYSQL_USER: serviceuser
+      MYSQL_PASSWORD: servicepassword
+    volumes:
+      # Script to create additional databases
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: "mysqladmin ping -h localhost -u root -proot"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: base-config
+  config-server:
+    image: estebanx55/healthcare-config-server:latest
+    ports:
+      - "3030:3030"
+    env_file:
+      - .env
+    healthcheck:
+      test: "curl --fail --silent localhost:3030/actuator/health/readiness | grep UP || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: base-config
+
+  eureka:
+    image: estebanx55/healthcare-eureka:latest
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservices-config
+
+networks:
+  healthcareapplication:
+    driver: bridge
