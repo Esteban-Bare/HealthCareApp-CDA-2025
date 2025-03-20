@@ -12,6 +12,8 @@
         <option value="$PROJECT_DIR$/ms-patient/pom.xml" />
         <option value="$PROJECT_DIR$/wep-app/pom.xml" />
         <option value="$PROJECT_DIR$/demo/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-notes/pom.xml" />
+        <option value="$PROJECT_DIR$/ms-diabetes/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

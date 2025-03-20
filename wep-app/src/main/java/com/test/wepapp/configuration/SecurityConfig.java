@@ -38,9 +38,14 @@ public class SecurityConfig {
                                 "/register", "/", "/css/**", "/js/**", "/images/**", "/static/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
+                        .loginPage("/login")
                         .defaultSuccessUrl("/dashboard", true)
                         .permitAll())
-                .logout(LogoutConfigurer::permitAll);
+                .logout(
+                        logout -> logout
+                                .logoutSuccessUrl("/")
+                                .permitAll()
+                );
         return http.build();
     }
 }

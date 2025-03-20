@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserToLogDto user = msPatientFeignClient.findByEmail(new UserLogDto(email)).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        UserToLogDto user = msPatientFeignClient.logByEmail(new UserLogDto(email)).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return new User(user.getEmail(), user.getPassword(),  Collections.singleton(() -> "ROLE_" + user.getRole().toUpperCase()));
     }

@@ -1,5 +1,22 @@
 services:
-  # i need a mysql container
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - ./mongo-data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    extends:
+      file: common-config.yml
+      service: base-config
   mysql:
     image: mysql:5.7
     ports:
@@ -79,10 +96,31 @@ services:
       file: common-config.yml
       service: microservices-config
 
+  ms-notes:
+    image: estebanx55/healthcare-ms-notes:latest
+    ports:
+      - "8082:8082"
+    depends_on:
+      eureka:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://root:rootpassword@mongodb:27017/notes_db?authSource=admin
+    healthcheck:
+      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    extends:
+      file: common-config.yml
+      service: microservices-config
+
   web-app:
     image: estebanx55/healthcare-wep-app:latest
     ports:
-      - "8082:8082"
+      - "8083:8083"
     depends_on:
       eureka:
         condition: service_healthy

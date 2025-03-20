@@ -25,4 +25,14 @@ public class Patient {
     private String address;
     private String phoneNumber;
     private String email;
+
+    public Patient(String firstName, String lastName, LocalDate birthday, String gender, String address, String phoneNumber, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 }

@@ -17,15 +17,26 @@
         </processorPath>
         <module name="demo.main" />
       </profile>
-      <profile name="Annotation profile for wep-app" enabled="true">
+      <profile name="Annotation profile for ms-diabetes" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
+        <module name="ms-diabetes" />
+      </profile>
+      <profile name="Annotation profile for wep-app" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
         <module name="wep-app" />
         <module name="ms-patient" />
+        <module name="ms-notes" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -37,6 +48,8 @@
       <module name="config-server" options="-parameters" />
       <module name="demo" options="-parameters" />
       <module name="eureka" options="-parameters" />
+      <module name="ms-diabetes" options="-parameters" />
+      <module name="ms-notes" options="-parameters" />
       <module name="ms-patient" options="-parameters" />
       <module name="wep-app" options="-parameters" />
     </option>
