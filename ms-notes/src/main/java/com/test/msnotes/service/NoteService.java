@@ -5,7 +5,6 @@ import com.test.msnotes.dto.PatientIdDto;
 import com.test.msnotes.model.Note;
 import com.test.msnotes.repository.NoteRepository;
 import com.test.msnotes.service.client.MsPatientFeignClient;
-import com.test.msnotes.util.MedicalTerms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
