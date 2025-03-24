@@ -1,7 +1,10 @@
 package com.test.wepapp.controller;
 
+import com.test.wepapp.dto.DiabetesResultDto;
 import com.test.wepapp.dto.NoteAddDto;
 import com.test.wepapp.dto.PatientDto;
+import com.test.wepapp.dto.PatientIdDto;
+import com.test.wepapp.service.client.MsDiabetesClientFeign;
 import com.test.wepapp.service.client.MsNotesClientFeign;
 import com.test.wepapp.service.client.MsPatientFeignClient;
 import feign.FeignException;
@@ -21,6 +24,8 @@ public class PatientController {
 
     @Autowired
     private MsNotesClientFeign msNotesClientFeign;
+    @Autowired
+    private MsDiabetesClientFeign msDiabetesClientFeign;
 
     @GetMapping("/patients")
     public String patients(Model model) {
@@ -98,6 +103,30 @@ public class PatientController {
             return "redirect:/patients";
         } catch (Exception e) {
             model.addAttribute("error", "Unexpected error updating note to patient ID " + note.getPatientId());
+            return "redirect:/patients";
+        }
+    }
+
+    @GetMapping("/patient/diabetes/{patientId}")
+    public String patientDiabetes(@PathVariable String patientId, Model model) {
+        try {
+            ResponseEntity<DiabetesResultDto> response = msDiabetesClientFeign.getDiabetesScore(new PatientIdDto(patientId));
+            if (response.getStatusCode() == HttpStatus.OK) {
+                model.addAttribute("diabetesResult", response.getBody());
+                model.addAttribute("patientId", patientId);
+                return "diabetes-score";
+            } else {
+                model.addAttribute("error", "Error: " + response.getStatusCode() + " - " + response.getBody());
+                return "redirect:/patients";
+            }
+        } catch (FeignException.NotFound e) {
+            model.addAttribute("error", "Diabetes for patient ID " + patientId + " not found");
+            return "redirect:/patients";
+        } catch (FeignException e) {
+            model.addAttribute("error", "Service error: " + e.getMessage());
+            return "redirect:/patients";
+        } catch (Exception e) {
+            model.addAttribute("error", "Unexpected error retrieving diabetes for patient ID " + patientId);
             return "redirect:/patients";
         }
     }

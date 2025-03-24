@@ -50,11 +50,8 @@
                                     <input type="hidden" name="id" th:value="${patient.id}">
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2">
                                 <a th:href="@{'/patient/notes/' + ${patient.id}}" class="btn btn-primary btn-sm">Notes</a>
+                                <a th:href="@{'/patient/diabetes/' + ${patient.id}}" class="btn btn-info btn-sm">Diabetes Assessment</a>
                             </div>
                         </td>
                     </tr>

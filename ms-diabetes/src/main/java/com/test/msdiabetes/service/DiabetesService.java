@@ -1,5 +1,6 @@
 package com.test.msdiabetes.service;
 
+import com.test.msdiabetes.dto.DiabetesResultDto;
 import com.test.msdiabetes.dto.Note;
 import com.test.msdiabetes.dto.PatientDto;
 import com.test.msdiabetes.dto.PatientIdDto;
@@ -22,18 +23,18 @@ public class DiabetesService {
     @Autowired
     private MsPatientFeignClient msPatientFeignClient;
 
-    public String calculateDiabetes(String patientId) {
+    public DiabetesResultDto calculateDiabetes(String patientId) {
         List<Note> notes = msNotesFeignClient.getPatientNotes(patientId).getBody();
         ResponseEntity<PatientDto> response = msPatientFeignClient.getPatientById(new PatientIdDto(patientId));
 
         if (response.getBody() == null) {
-            return "Patient not found";
+            return new DiabetesResultDto("Patient not found", null);
         }
 
         PatientDto info = response.getBody();
 
         if (notes.isEmpty()) {
-            return "No notes found";
+            return new DiabetesResultDto("Patient not found", null);
         }
 
         int age = calculateAge(info.getBirthday());
@@ -43,8 +44,8 @@ public class DiabetesService {
 
         String riskLevel = getRiskLevel(countTriggers, age, gender);
 
-        return "Patient: " + info.getFirstName() + " " + info.getLastName() +
-                " (" + age + " years) diabetes assessment: " + riskLevel;
+        return new DiabetesResultDto("Patient: " + info.getFirstName() + " " + info.getLastName() +
+                " (" + age + " years) diabetes assessment: " + riskLevel, riskLevelToLower(riskLevel));
     }
 
     private int calculateAge(LocalDate birthday) {
@@ -113,5 +114,14 @@ public class DiabetesService {
         }
 
         return "NONE";
+    }
+
+    public String riskLevelToLower(String riskLevel) {
+        return switch (riskLevel) {
+            case "BORDERLINE" -> "borderline";
+            case "IN DANGER" -> "danger";
+            case "EARLY ONSET" -> "early-onset";
+            default -> "none";
+        };
     }
 }

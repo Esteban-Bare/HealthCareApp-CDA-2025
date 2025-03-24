@@ -1,5 +1,6 @@
 package com.test.msdiabetes.controller;
 
+import com.test.msdiabetes.dto.DiabetesResultDto;
 import com.test.msdiabetes.dto.PatientIdDto;
 import com.test.msdiabetes.service.DiabetesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ public class DiabetesController {
     private DiabetesService diabetesService;
 
     @PostMapping("/diabetes-score")
-    public ResponseEntity<String> getDiabetesScore(@RequestBody PatientIdDto patientIdDto) {
+    public ResponseEntity<DiabetesResultDto> getDiabetesScore(@RequestBody PatientIdDto patientIdDto) {
         return ResponseEntity.ok(diabetesService.calculateDiabetes(patientIdDto.getPatientId()));
     }
 }
